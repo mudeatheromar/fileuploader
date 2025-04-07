@@ -4,6 +4,7 @@ const cors = require("cors");
 const path = require("path");
 const db = require("./models");
 const authRoutes = require("./routes/auth");
+const uploadRoute = require("./routes/upload")
 
 const app = express();
 
@@ -16,8 +17,10 @@ app.get("/", (req, res) => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/upload", uploadRoute);
 
-const PORT = process.env.PORT || 5005;
+
+const PORT = process.env.PORT || 5008;
 
 db.sequelize
   .sync()

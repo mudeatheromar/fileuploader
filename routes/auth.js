@@ -55,10 +55,9 @@ router.post("/signup", async (req, res) => {
       return res.status(401).json({ message: "Invalid email or password" });
     }
 
-    // 3️⃣ Generate JWT token
     const token = jwt.sign(
       { userId: user.id, email: user.email, roleId: user.roleId }, 
-      "hmm", // Use an environment variable for security
+      process.env.JWT_SECRET,
       { expiresIn: "1h" }
     );
 

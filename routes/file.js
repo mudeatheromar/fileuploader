@@ -20,7 +20,8 @@ router.post("/", authenticate, upload.single("file"), async (req, res) => {
       name: req.file.originalname,
       path: req.file.path, // Cloudinary URL
       folderId: folderId || null,
-      userId: req.user.id    });
+      userId: req.user.id 
+       });
 
     return res.status(201).json({
       message: "✅ File uploaded successfully",
@@ -45,7 +46,7 @@ router.post("/", authenticate, upload.single("file"), async (req, res) => {
 router.get("/", authenticate, async (req, res) => {
   try {
     const files = await File.findAll({
-      where: { userId: req.user.userId },
+      where: { userId: req.user.id },
       order: [["createdAt", "DESC"]],
       attributes: ["id", "name", "path", "folderId", "createdAt"],
     });

@@ -63,4 +63,50 @@ router.get("/", authenticate, async (req, res) => {
   }
 });
 
+router.delete("/:id", authenticate, async (req, res) => {
+  try {
+    const file = await File.findOne({
+      where: { id: req.params.id, userId: req.user.id },
+    });
+
+    if (!file) {
+      return res.status(404).json({ message: "❌ File not found" });
+    }
+
+    await file.destroy();
+
+    res.status(200).json({ message: "✅ File deleted successfully" });
+  } catch (err) {
+    console.error("Delete File Error:", err);
+    res.status(500).json({
+      message: "❌ Failed to delete file",
+      error: err.message,
+      stack: err.stack,
+    });
+  }
+});
+
+
+router.put("/:id/move", authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { targetFolderId } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const file = await File.findOne({ where: { id, userId } });
+
+    if (!file) {
+      return res.status(404).json({ error: "File not found" });
+    }
+
+    file.folderId = targetFolderId || null;
+    await file.save();
+
+    res.json({ message: "✅ File moved successfully", file });
+  } catch (err) {
+    console.error("Error moving file:", err);
+    res.status(500).json({ error: "❌ Failed to move file", details: err.message });
+  }
+});
+
 module.exports = router;

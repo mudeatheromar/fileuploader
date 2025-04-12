@@ -39,7 +39,7 @@ app.get("/test", async (req, res) => {
 });
 
 // ✅ Server & DB Start
-const PORT = process.env.PORT || 5018;
+const PORT = process.env.PORT || 5011;
 
 db.sequelize
   .sync()

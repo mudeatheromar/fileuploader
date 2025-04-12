@@ -7,11 +7,10 @@ const authenticateToken = require('../middlewears/auth');
 router.post('/', authenticateToken, upload.single('file'), async (req, res) => {
   const userId = req.user.id;
   const { folderId } = req.body;
-  
 
   try {
-    // Validate folder if provided
     let folder = null;
+
     if (folderId) {
       folder = await Folder.findOne({ where: { id: folderId, userId } });
       if (!folder) {
@@ -19,7 +18,6 @@ router.post('/', authenticateToken, upload.single('file'), async (req, res) => {
       }
     }
 
-    // Save file record in DB
     const file = await File.create({
       name: req.file.originalname,
       path: req.file.path,

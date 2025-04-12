@@ -140,6 +140,30 @@ router.put("/:id/move", async (req, res) => {
   }
 });
 
+router.put("/:id/rename", async (req, res) => {
+  const { id } = req.params;
+  const { name } = req.body;
+  const userId = req.user.id;
 
+  if (!name || name.trim() === "") {
+    return res.status(400).json({ error: "New folder name is required." });
+  }
+
+  try {
+    const folder = await Folder.findOne({ where: { id, userId } });
+
+    if (!folder) {
+      return res.status(404).json({ error: "Folder not found" });
+    }
+
+    folder.name = name.trim();
+    await folder.save();
+
+    res.json({ message: "✅ Folder renamed successfully", folder });
+  } catch (err) {
+    console.error("Error renaming folder:", err);
+    res.status(500).json({ error: "❌ Failed to rename folder", details: err.message });
+  }
+});
 
 module.exports = router;

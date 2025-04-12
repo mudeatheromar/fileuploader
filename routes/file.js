@@ -109,4 +109,31 @@ router.put("/:id/move", authenticate, async (req, res) => {
   }
 });
 
+router.put("/:id/rename", authenticate, async (req, res) => {
+  const { id } = req.params;
+  const { newName } = req.body; // New file name from request body
+  const userId = req.user.id;
+
+  if (!newName || newName.trim() === "") {
+    return res.status(400).json({ message: "❌ New name cannot be empty" });
+  }
+
+  try {
+    const file = await File.findOne({ where: { id, userId } });
+
+    if (!file) {
+      return res.status(404).json({ message: "❌ File not found" });
+    }
+
+    // Update the file's name
+    file.name = newName.trim();
+    await file.save();
+
+    res.json({ message: "✅ File renamed successfully", file });
+  } catch (err) {
+    console.error("Error renaming file:", err);
+    res.status(500).json({ error: "❌ Failed to rename file", details: err.message });
+  }
+});
+
 module.exports = router;
